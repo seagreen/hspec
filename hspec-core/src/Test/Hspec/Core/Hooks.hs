@@ -12,6 +12,9 @@ module Test.Hspec.Core.Hooks (
 , around
 , around_
 , aroundWith
+
+, mapSubject
+, ignoreSubject
 ) where
 
 import           Control.Exception (SomeException, finally, throwIO, try)
@@ -91,3 +94,14 @@ aroundWith action = mapSpecItem action (modifyAroundAction action)
 modifyAroundAction :: (ActionWith a -> ActionWith b) -> Item a -> Item b
 modifyAroundAction action item@Item{itemExample = e} =
   item{ itemExample = \params aroundAction -> e params (aroundAction . action) }
+
+-- | Modify the subject under test.
+--
+-- Note that this resembles a contravariant functor on the first type parameter
+-- of `SpecM`.  This is because the subject is passed inwards, as an argument
+-- to the spec item.
+mapSubject :: (b -> a) -> SpecWith a -> SpecWith b
+mapSubject f = aroundWith (. f)
+
+ignoreSubject :: SpecWith () -> SpecWith a
+ignoreSubject = mapSubject (const ())
