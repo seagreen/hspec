@@ -1,3 +1,6 @@
+## Changes in 2.6.0
+  - Do not calculate diff on `--no-diff` (see #332)
+
 ## Changes in 2.5.5
   - Use `module[line:column]` instead of `module:line:column` as default label
     for `describe`/`it` (fixes #366)
